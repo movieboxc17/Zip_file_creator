@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zip File Creator</title>
+    <!-- Include JSZip library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+</head>
+<body>
+    <h1>Zip File Creator</h1>
+    <input type="file" id="fileInput" multiple>
+    <button onclick="createZip()">Create Zip</button>
+
+    <script>
+        function createZip() {
+            const filesInput = document.getElementById('fileInput');
+            const files = filesInput.files;
+
+            if (files.length === 0) {
+                alert("Please select files to add to the zip.");
+                return;
+            }
+
+            const zip = new JSZip();
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                zip.file(file.name, file);
+            }
+
+            zip.generateAsync({ type: 'blob' })
+                .then(function (content) {
+                    const zipFileName = 'myZipFile.zip';
+                    const a = document.createElement('a');
+                    const url = URL.createObjectURL(content);
+
+                    a.href = url;
+                    a.download = zipFileName;
+                    a.click();
+
+                    URL.revokeObjectURL(url);
+                });
+        }
+    </script>
+</body>
+</html>
